@@ -229,49 +229,50 @@ echo
 
 echo
 echo "+----------------------------------------------------------+"
-echo "| Checking for Apache web server daemon...				|"
+echo "| Checking for Apache web server daemon...                 |"
 echo "+----------------------------------------------------------+"
 echo
 echo "Checking for Apache web server daemon" >>$SETUP_LOG
 
-# Try to find Apache daemon
+# If not set, try to autodetect Apache daemon
 if [ -z "$APACHE_BIN" ]; then
-	APACHE_BIN_FOUND=$(which httpd 2>/dev/null)
-	if [ -z "$APACHE_BIN_FOUND" ]; then
-		APACHE_BIN_FOUND=$(which apache2ctl 2>/dev/null)
-		if [ -z "$APACHE_BIN_FOUND" ]; then
-			APACHE_BIN_FOUND=$(which apachectl 2>/dev/null)
-			if [ -z "$APACHE_BIN_FOUND" ]; then
-				APACHE_BIN_FOUND=$(which httpd2 2>/dev/null)
-			fi
-		fi
-	fi
+    APACHE_BIN=$(which httpd 2>/dev/null)
+    if [ -z "$APACHE_BIN" ]; then
+        APACHE_BIN=$(which apache2ctl 2>/dev/null)
+        if [ -z "$APACHE_BIN" ]; then
+            APACHE_BIN=$(which apachectl 2>/dev/null)
+            if [ -z "$APACHE_BIN" ]; then
+                APACHE_BIN=$(which httpd2 2>/dev/null)
+            fi
+        fi
+    fi
 fi
-echo "Found Apache daemon $APACHE_BIN_FOUND" >>$SETUP_LOG
+echo "Found/Configured Apache daemon: $APACHE_BIN" >>$SETUP_LOG
 
 # Ask user's confirmation
 res=0
 while [ $res -eq 0 ]; do
-	echo -n "Where is Apache daemon binary [$APACHE_BIN_FOUND] ?"
-	read ligne
-	if [ -z "$ligne" ]; then
-		APACHE_BIN=$APACHE_BIN_FOUND
-	else
-		APACHE_BIN="$ligne"
-	fi
-	# Ensure file exists and is executable
-	if [ -x $APACHE_BIN ]; then
-		res=1
-	else
-		echo "*** ERROR: $APACHE_BIN is not executable !"
-		res=0
-	fi
-	# Ensure file is not a directory
-	if [ -d $APACHE_BIN ]; then
-		echo "*** ERROR: $APACHE_BIN is a directory !"
-		res=0
-	fi
-done
+    echo -n "Where is Apache daemon binary [$APACHE_BIN] ?"
+    read ligne
+    if [ -z "$ligne" ]; then
+        # User hits enter, accept current value
+        : # No action needed, $APACHE_BIN already set
+    else
+        APACHE_BIN="$ligne"
+    fi
+    # Ensure file exists and is executable
+    if [ -x "$APACHE_BIN" ]; then
+        res=1
+    else
+        echo "*** ERROR: $APACHE_BIN is not executable !"
+        res=0
+    fi
+    # Ensure file is not a directory
+    if [ -d "$APACHE_BIN" ]; then
+        echo "*** ERROR: $APACHE_BIN is a directory !"
+        res=0
+    fi
+  done
 echo "OK, using Apache daemon $APACHE_BIN ;-)"
 echo "Using Apache daemon $APACHE_BIN" >>$SETUP_LOG
 echo
