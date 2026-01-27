@@ -272,7 +272,7 @@ while [ $res -eq 0 ]; do
         res=0
     fi
     # Ensure file is not a directory
-    if [ -d "$APACHE_BIN" ]; then
+    if [ -n "$APACHE_BIN" ] && [ -d "$APACHE_BIN" ]; then
         echo "*** ERROR: $APACHE_BIN is a directory !"
         res=0
     fi
