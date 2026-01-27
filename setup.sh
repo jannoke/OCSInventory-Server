@@ -272,7 +272,7 @@ while [ $res -eq 0 ]; do
         echo "*** ERROR: $APACHE_BIN is a directory !"
         res=0
     fi
-  done
+done
 echo "OK, using Apache daemon $APACHE_BIN ;-)"
 echo "Using Apache daemon $APACHE_BIN" >>$SETUP_LOG
 echo
