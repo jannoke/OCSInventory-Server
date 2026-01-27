@@ -261,10 +261,14 @@ while [ $res -eq 0 ]; do
         APACHE_BIN="$ligne"
     fi
     # Ensure file exists and is executable
-    if [ -x "$APACHE_BIN" ]; then
+    if [ -n "$APACHE_BIN" ] && [ -x "$APACHE_BIN" ]; then
         res=1
     else
-        echo "*** ERROR: $APACHE_BIN is not executable !"
+        if [ -z "$APACHE_BIN" ]; then
+            echo "*** ERROR: Apache daemon path is empty !"
+        else
+            echo "*** ERROR: $APACHE_BIN is not executable !"
+        fi
         res=0
     fi
     # Ensure file is not a directory
