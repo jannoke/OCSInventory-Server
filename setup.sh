@@ -282,9 +282,11 @@ echo "| Checking for Apache main configuration file...		  |"
 echo "+----------------------------------------------------------+"
 echo
 
-# Try to find Apache main configuration file
+# Check for Apache main configuration file
 echo "Checking for Apache main configuration file" >>$SETUP_LOG
+
 if [ -z "$APACHE_CONFIG_FILE" ]; then
+	# Autodetect if APACHE_CONFIG_FILE is not set
 	APACHE_ROOT=$(eval $APACHE_BIN -V | grep "HTTPD_ROOT" | cut -d'=' -f2 | tr -d '"')
 	echo "Found Apache HTTPD_ROOT $APACHE_ROOT" >>$SETUP_LOG
 	APACHE_CONFIG=$(eval $APACHE_BIN -V | grep "SERVER_CONFIG_FILE" | cut -d'=' -f2 | tr -d '"')
@@ -294,8 +296,10 @@ if [ -z "$APACHE_CONFIG_FILE" ]; then
 	else
 		APACHE_CONFIG_FILE_FOUND="$APACHE_ROOT/$APACHE_CONFIG"
 	fi
+else
+	# Use value set from setup.answers
+	APACHE_CONFIG_FILE_FOUND="$APACHE_CONFIG_FILE"
 fi
-echo "Found Apache main configuration file $APACHE_CONFIG_FILE_FOUND" >>$SETUP_LOG
 
 # Ask user's confirmation
 res=0
